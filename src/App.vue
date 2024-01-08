@@ -1,7 +1,8 @@
-<script setup></script>
-
+<script setup>
+import ToDoList from "./components/ToDoList.vue";
+</script>
 <template>
-  <div><h1 class="text-3xl font-bold underline">Hello world!</h1></div>
+  <div>
+    <ToDoList class="w-3/4 mx-auto mt-10" />
+  </div>
 </template>
-
-<style scoped></style>
