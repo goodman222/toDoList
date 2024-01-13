@@ -37,6 +37,11 @@ let isMenuOpen = ref(true);
 function closeAllMenu() {
   isMenuOpen.value = !isMenuOpen.value; //меняем перменную (пропс), чтобы сработал watch
 }
+
+function deleteItem(index) {
+  taskList.value.splice(index, 1);
+  console.log("del: " + index);
+}
 </script>
 
 <template>
@@ -46,8 +51,10 @@ function closeAllMenu() {
     <ToDoItem
       v-for="(item, index) in taskList"
       :key="index"
+      :index="index"
       :other-menu-open="isMenuOpen"
       @menu-btn-click="closeAllMenu"
+      @delete-item="deleteItem(index)"
       >{{ item }}</ToDoItem
     >
   </div>

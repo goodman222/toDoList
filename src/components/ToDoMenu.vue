@@ -1,6 +1,7 @@
 <script setup>
-import { defineEmits } from "vue";
+import { defineEmits, defineProps } from "vue";
 const emits = defineEmits(["deleteItem", "upItem", "downItem"]);
+const props = defineProps(["index"]);
 </script>
 
 <template>
@@ -8,7 +9,7 @@ const emits = defineEmits(["deleteItem", "upItem", "downItem"]);
     <ul>
       <li
         class="p-1 border-b-2 hover:bg-red-600 cursor-default"
-        @click="emits('deleteItem', null)"
+        @click="emits('deleteItem', props.index)"
       >
         Удалить
       </li>

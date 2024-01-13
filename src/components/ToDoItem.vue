@@ -1,21 +1,14 @@
 <script setup>
 import ToDoMenu from "./ToDoMenu.vue";
-import {
-  ref,
-  defineEmits,
-  defineProps,
-  watch,
-  watchEffect,
-  toRef,
-  computed,
-} from "vue";
+import { ref, defineEmits, defineProps, watch, toRef } from "vue";
 
 const isMenuOpen = ref(false);
 
-const emits = defineEmits(["menuBtnClick"]);
+const emits = defineEmits(["menuBtnClick", "deleteItem"]);
 
 let props = defineProps({
   otherMenuOpen: Boolean,
+  index: Number,
 });
 
 const myRef = toRef(props, "otherMenuOpen");
@@ -33,6 +26,10 @@ async function openMenu() {
 watch(myRef, () => {
   isMenuOpen.value = false;
 });
+
+function deleteItem(index) {
+  emits("deleteItem", index);
+}
 </script>
 
 <template>
@@ -47,6 +44,10 @@ watch(myRef, () => {
         <li class="w-2 h-2 bg-black rounded-md mt-1"></li>
       </ul>
     </div>
-    <toDoMenu v-if="isMenuOpen" @deleteItem="console.log('delete')" />
+    <toDoMenu
+      v-if="isMenuOpen"
+      @delete-item="deleteItem(index)"
+      :index="props.index"
+    />
   </div>
 </template>
