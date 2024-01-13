@@ -31,14 +31,24 @@ const addItem = (val) => {
 
   taskList.value.push(val);
 };
+
+let isMenuOpen = ref(true);
+
+function closeAllMenu() {
+  isMenuOpen.value = !isMenuOpen.value; //меняем перменную (пропс), чтобы сработал watch
+}
 </script>
 
 <template>
-  <div>
+  <div @click="closeAllMenu">
     <ToDoAdd @add-item="addItem" @change-input="clearError" />
     <ToDoError :error-text="errorText" />
-    <ToDoItem v-for="(item, index) in taskList" :key="index">{{
-      item
-    }}</ToDoItem>
+    <ToDoItem
+      v-for="(item, index) in taskList"
+      :key="index"
+      :other-menu-open="isMenuOpen"
+      @menu-btn-click="closeAllMenu"
+      >{{ item }}</ToDoItem
+    >
   </div>
 </template>
