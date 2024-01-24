@@ -2,6 +2,9 @@
 import { defineEmits, defineProps } from "vue";
 const emits = defineEmits(["deleteItem", "upItem", "downItem"]);
 const props = defineProps(["index"]);
+
+import { useStore } from "vuex";
+const store = useStore();
 </script>
 
 <template>
@@ -13,8 +16,28 @@ const props = defineProps(["index"]);
       >
         Удалить
       </li>
-      <li class="p-1 border-b-2 hover:bg-green-500 cursor-default">Поднять</li>
-      <li class="p-1 hover:bg-yellow-500 cursor-default">Опустить</li>
+      <li
+        class="p-1 border-b-2 hover:bg-green-500 cursor-default"
+        @click="
+          store.commit('swap', {
+            index: props.index,
+            direct: 1,
+          })
+        "
+      >
+        Поднять
+      </li>
+      <li
+        class="p-1 hover:bg-yellow-500 cursor-default"
+        @click="
+          store.commit('swap', {
+            index: props.index,
+            direct: -1,
+          })
+        "
+      >
+        Опустить
+      </li>
     </ul>
   </div>
 </template>

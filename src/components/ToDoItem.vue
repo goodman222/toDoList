@@ -1,6 +1,9 @@
 <script setup>
 import ToDoMenu from "./ToDoMenu.vue";
 import { ref, defineEmits, defineProps, watch, toRef } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
 
 const isMenuOpen = ref(false);
 
@@ -36,7 +39,12 @@ function deleteItem(index) {
   <div
     class="flex flex-row justify-between px-6 py-4 bg-slate-400 rounded-lg mt-4 relative"
   >
-    <p class="text-xl"><slot></slot></p>
+    <p
+      class="text-xl cursor-pointer"
+      @click="store.commit('openPopUp', props.index)"
+    >
+      <slot></slot>
+    </p>
     <div class="cursor-pointer px-3" @click.stop="openMenu">
       <ul>
         <li class="w-2 h-2 bg-black rounded-md mt-1"></li>

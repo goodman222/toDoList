@@ -2,14 +2,14 @@
 import ToDoItem from "./ToDoItem.vue";
 import ToDoAdd from "./ToDoAdd.vue";
 import ToDoError from "./ToDoError.vue";
+import ToDoPopUp from "./ToDoPopUp.vue";
 
-import { ref } from "vue";
+// import ToDoTgBtn from "./ToDoTgBtn.vue";
 
-const taskList = ref([
-  "Помыть посуду",
-  "Постирать носки",
-  "Пропылесосить в зале",
-]);
+import { useStore } from "vuex";
+import { ref, onBeforeMount } from "vue";
+
+const store = useStore();
 
 let errorText = ref("<br>");
 
@@ -23,13 +23,13 @@ const addItem = (val) => {
   if (!val) {
     errorText.value = "Вы ничего не ввели";
     return;
-  } else if (taskList.value.includes(val)) {
+  } else if (store.state.taskList.find((elem) => elem.text === val)) {
     errorText.value = "Данная задача уже существует";
-
     return;
   }
 
-  taskList.value.push(val);
+  store.state.taskList.push({ text: val, addTime: new Date() });
+  saveToLocalStorage();
 };
 
 let isMenuOpen = ref(true);
@@ -39,9 +39,21 @@ function closeAllMenu() {
 }
 
 function deleteItem(index) {
-  taskList.value.splice(index, 1);
-  console.log("del: " + index);
+  store.state.taskList.splice(index, 1);
+  saveToLocalStorage();
 }
+
+function saveToLocalStorage() {
+  const taskListString = JSON.stringify(store.state.taskList);
+  localStorage.setItem("taskList", taskListString);
+}
+
+onBeforeMount(() => {
+  const taskListString = localStorage.getItem("taskList");
+  if (taskListString) {
+    store.state.taskList = JSON.parse(taskListString);
+  }
+});
 </script>
 
 <template>
@@ -49,13 +61,22 @@ function deleteItem(index) {
     <ToDoAdd @add-item="addItem" @change-input="clearError" />
     <ToDoError :error-text="errorText" />
     <ToDoItem
-      v-for="(item, index) in taskList"
+      v-for="(item, index) in $store.state.taskList"
       :key="index"
       :index="index"
       :other-menu-open="isMenuOpen"
       @menu-btn-click="closeAllMenu"
       @delete-item="deleteItem(index)"
-      >{{ item }}</ToDoItem
+      >{{ item.text }}</ToDoItem
     >
+    <div v-if="$store.state.taskList.length === 0">Задач не установлено</div>
+    <!-- <ToDoTgBtn /> -->
+
+    <ToDoPopUp
+      v-if="
+        $store.state.currentPopUpIndex >= 0 &&
+        $store.state.currentPopUpIndex < $store.state.taskList.length
+      "
+    />
   </div>
 </template>
